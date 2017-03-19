@@ -33,6 +33,7 @@ public class Client extends javax.swing.JFrame {
      */
     public Client() {
         initComponents();
+        this.rbGoogleDrive.setSelected(true);
     }
 
     /**
@@ -44,38 +45,116 @@ public class Client extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        btnGroupServer = new javax.swing.ButtonGroup();
+        btnSelecionarArquivo = new javax.swing.JButton();
+        panelServer = new javax.swing.JPanel();
+        rbGoogleDrive = new javax.swing.JRadioButton();
+        rbDropbox = new javax.swing.JRadioButton();
+        rbOneDrive = new javax.swing.JRadioButton();
+        lblArquivoSelecionado = new javax.swing.JLabel();
+        lblArquivo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSelecionarArquivo.setText("Selecionar");
+        btnSelecionarArquivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSelecionarArquivoActionPerformed(evt);
             }
         });
+
+        panelServer.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Server", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 1, 13))); // NOI18N
+
+        btnGroupServer.add(rbGoogleDrive);
+        rbGoogleDrive.setText("GoogleDrive");
+        rbGoogleDrive.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbGoogleDriveActionPerformed(evt);
+            }
+        });
+
+        btnGroupServer.add(rbDropbox);
+        rbDropbox.setText("Dropbox");
+        rbDropbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbDropboxActionPerformed(evt);
+            }
+        });
+
+        btnGroupServer.add(rbOneDrive);
+        rbOneDrive.setText("OneDrive");
+        rbOneDrive.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbOneDriveActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelServerLayout = new javax.swing.GroupLayout(panelServer);
+        panelServer.setLayout(panelServerLayout);
+        panelServerLayout.setHorizontalGroup(
+            panelServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelServerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rbGoogleDrive)
+                    .addComponent(rbDropbox)
+                    .addComponent(rbOneDrive))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelServerLayout.setVerticalGroup(
+            panelServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelServerLayout.createSequentialGroup()
+                .addComponent(rbGoogleDrive)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rbOneDrive)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(rbDropbox)
+                .addContainerGap())
+        );
+
+        lblArquivoSelecionado.setText("Arquivo Selecionado: ");
+
+        lblArquivo.setText("Nenhum");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(131, 131, 131)
-                .addComponent(jButton1)
-                .addContainerGap(196, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(panelServer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblArquivoSelecionado)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblArquivo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 160, Short.MAX_VALUE)
+                        .addComponent(btnSelecionarArquivo)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(101, 101, 101)
-                .addComponent(jButton1)
-                .addContainerGap(176, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panelServer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSelecionarArquivo))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblArquivoSelecionado)
+                            .addComponent(lblArquivo))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        panelServer.getAccessibleContext().setAccessibleName("panel_server");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnSelecionarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelecionarArquivoActionPerformed
         File file = openFile();
         try {
             sendMessageMulticast(file.getName());
@@ -85,7 +164,19 @@ public class Client extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Erro no envio do arquivo", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnSelecionarArquivoActionPerformed
+
+    private void rbGoogleDriveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbGoogleDriveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbGoogleDriveActionPerformed
+
+    private void rbDropboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbDropboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbDropboxActionPerformed
+
+    private void rbOneDriveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbOneDriveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbOneDriveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -197,6 +288,13 @@ public class Client extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.ButtonGroup btnGroupServer;
+    private javax.swing.JButton btnSelecionarArquivo;
+    private javax.swing.JLabel lblArquivo;
+    private javax.swing.JLabel lblArquivoSelecionado;
+    private javax.swing.JPanel panelServer;
+    private javax.swing.JRadioButton rbDropbox;
+    private javax.swing.JRadioButton rbGoogleDrive;
+    private javax.swing.JRadioButton rbOneDrive;
     // End of variables declaration//GEN-END:variables
 }
