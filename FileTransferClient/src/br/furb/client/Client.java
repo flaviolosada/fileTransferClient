@@ -1,3 +1,16 @@
+package br.furb.client;
+
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.net.Socket;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -75,6 +88,60 @@ public class Client extends javax.swing.JFrame {
                 new Client().setVisible(true);
             }
         });
+    }
+    
+    public void sendMessageMulticast(String fileName) throws IOException {
+        byte[] sendData = new byte[1024];
+        byte ttl = (byte) 10;
+
+        int porta = 5000;
+        MulticastSocket clientSocket = new MulticastSocket();
+        InetAddress endereco = InetAddress.getByName("227.55.77.99");
+        clientSocket.joinGroup(endereco);
+        if (fileName != null && !"".equals(fileName)) {
+            sendData = ("[TEXT]" + fileName).getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, endereco, porta);
+            clientSocket.setTimeToLive(ttl);
+            clientSocket.send(sendPacket);            
+            clientSocket.leaveGroup(endereco);
+            clientSocket.close();            
+        }
+    }
+    
+    private static Address receiveServerName() throws Exception {
+        byte[] buf = new byte[1024];
+        DatagramPacket request = null;
+        DatagramSocket socket = new DatagramSocket(5005);
+        request = new DatagramPacket (buf, buf.length);
+        String result = "";
+        int attempt = 0;
+        while ("".equals(result.trim()) || attempt >= 10) {
+            socket.receive(request);
+            result = new String(request.getData(),0,request.getLength());
+            if (!"".equals(result.trim())) {
+                Address address = new Address();
+                result = result.substring(4);
+                String[] aResult = result.split(":");
+                address.setIpAddress(aResult[0]);
+                address.setPortNumber(Integer.parseInt(aResult[1]));
+                return address;
+            }
+        }            
+        return null;
+    }
+    
+    private static void sendFileSocket(Address serverAddress, File file) throws Exception {
+        Socket socket;
+        byte[] sendData = new byte[1024];
+        if (file != null ) {
+            /* Inicializacao de socket TCP */
+            socket = new Socket(serverAddress.getIpAddress(), serverAddress.getPortNumber());
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+            bis.read(sendData);
+            socket.getOutputStream().write(sendData);
+            bis.close();
+            socket.close();
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
