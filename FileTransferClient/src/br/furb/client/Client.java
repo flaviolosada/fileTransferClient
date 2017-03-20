@@ -222,12 +222,23 @@ public class Client extends javax.swing.JFrame {
         InetAddress endereco = InetAddress.getByName("227.55.77.99");
         clientSocket.joinGroup(endereco);
         if (fileName != null && !"".equals(fileName)) {
-            sendData = ("[TEXT]" + fileName).getBytes();
+//            sendData = ("[TEXT]" + fileName).getBytes();
+            sendData = (this.getTipoArquivoSelecionado() + fileName).getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, endereco, porta);
             clientSocket.setTimeToLive(ttl);
             clientSocket.send(sendPacket);            
             clientSocket.leaveGroup(endereco);
             clientSocket.close();            
+        }
+    }
+    
+    private String getTipoArquivoSelecionado() {
+        if (this.rbGoogleDrive.isSelected()) {
+            return "[GoogleDrive]";
+        } else if (this.rbOneDrive.isSelected()) {
+            return "[OneDrive]";
+        } else {
+            return "[Dropbox]";
         }
     }
     
