@@ -310,10 +310,10 @@ public class Client extends javax.swing.JFrame {
                     double acumPercent = 0;
                     long acumRead = 0;
                     while ((reads = in.read(buffer, 0, sizeBuffer)) != -1) {  
-                        out.write(buffer, 0, reads); 
                         acumPercent += (reads * 100.0) / sizeFile;
                         acumRead += reads;
                         publish(Math.round(acumPercent), acumRead);
+                        out.write(buffer, 0, reads); 
                     }  
                     socket.close();  
                     // colocado sleep, pois com arquivos menores é retornado antes que o metodo process termine
