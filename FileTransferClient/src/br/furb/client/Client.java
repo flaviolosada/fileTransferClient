@@ -12,8 +12,14 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.Socket;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -50,12 +56,15 @@ public class Client extends javax.swing.JFrame {
         rbGoogleDrive = new javax.swing.JRadioButton();
         rbDropbox = new javax.swing.JRadioButton();
         rbOneDrive = new javax.swing.JRadioButton();
-        lblArquivoSelecionado = new javax.swing.JLabel();
-        lblArquivo = new javax.swing.JLabel();
+        arquivoPB = new javax.swing.JProgressBar();
+        totalLB = new javax.swing.JLabel();
+        enviadoLB = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Envio de arquivo");
+        setResizable(false);
 
-        btnSelecionarArquivo.setText("Selecionar");
+        btnSelecionarArquivo.setText("Enviar arquivo");
         btnSelecionarArquivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSelecionarArquivoActionPerformed(evt);
@@ -94,74 +103,80 @@ public class Client extends javax.swing.JFrame {
             panelServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelServerLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rbGoogleDrive)
-                    .addComponent(rbDropbox)
-                    .addComponent(rbOneDrive))
+                .addComponent(rbGoogleDrive)
+                .addGap(18, 18, 18)
+                .addComponent(rbOneDrive)
+                .addGap(18, 18, 18)
+                .addComponent(rbDropbox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelServerLayout.setVerticalGroup(
             panelServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelServerLayout.createSequentialGroup()
-                .addComponent(rbGoogleDrive)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rbOneDrive)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(rbDropbox)
-                .addContainerGap())
+                .addGroup(panelServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbGoogleDrive)
+                    .addComponent(rbOneDrive)
+                    .addComponent(rbDropbox))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        lblArquivoSelecionado.setText("Arquivo Selecionado: ");
+        arquivoPB.setStringPainted(true);
 
-        lblArquivo.setText("Nenhum");
+        totalLB.setText("Total:");
+
+        enviadoLB.setText("Enviado:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(arquivoPB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelServer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblArquivoSelecionado)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblArquivo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 160, Short.MAX_VALUE)
-                        .addComponent(btnSelecionarArquivo)))
-                .addContainerGap())
+                    .addComponent(btnSelecionarArquivo)
+                    .addComponent(enviadoLB)
+                    .addComponent(totalLB))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panelServer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(btnSelecionarArquivo))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblArquivoSelecionado)
-                            .addComponent(lblArquivo))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSelecionarArquivo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(totalLB)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(enviadoLB)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(arquivoPB, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         panelServer.getAccessibleContext().setAccessibleName("panel_server");
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSelecionarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelecionarArquivoActionPerformed
+        arquivoPB.setValue(0);
         File file = openFile();
         try {
-            sendMessageMulticast(file.getName());
-            Address serverAddress = receiveServerAddress();
-            sendFileSocket(serverAddress, file);
-            JOptionPane.showMessageDialog(this, "Envio concluído", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            if (file != null) {
+                sendMessageMulticast();
+                Address serverAddress = receiveServerAddress();
+                if (serverAddress != null) { 
+                    sendFileSocket(serverAddress, file);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Não foi possível obter o endereço do servidor", "Não foi possível obter o endereço do servidor", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro no envio do arquivo", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Não foi possível obter o endereço do servidor", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSelecionarArquivoActionPerformed
 
@@ -212,7 +227,7 @@ public class Client extends javax.swing.JFrame {
         });
     }
     
-    public void sendMessageMulticast(String fileName) throws IOException {
+    public void sendMessageMulticast() throws IOException {
         byte[] sendData = new byte[1024];
         byte ttl = (byte) 10;
 
@@ -220,15 +235,12 @@ public class Client extends javax.swing.JFrame {
         MulticastSocket clientSocket = new MulticastSocket();
         InetAddress endereco = InetAddress.getByName("227.55.77.99");
         clientSocket.joinGroup(endereco);
-        if (fileName != null && !"".equals(fileName)) {
-//            sendData = ("[TEXT]" + fileName).getBytes();
-            sendData = (this.getTipoArquivoSelecionado() + fileName).getBytes();
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, endereco, porta);
-            clientSocket.setTimeToLive(ttl);
-            clientSocket.send(sendPacket);            
-            clientSocket.leaveGroup(endereco);
-            clientSocket.close();            
-        }
+        sendData = getTipoArquivoSelecionado().getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, endereco, porta);
+        clientSocket.setTimeToLive(ttl);
+        clientSocket.send(sendPacket);            
+        clientSocket.leaveGroup(endereco);
+        clientSocket.close();            
     }
     
     private String getTipoArquivoSelecionado() {
@@ -241,53 +253,110 @@ public class Client extends javax.swing.JFrame {
         }
     }
     
-    private static Address receiveServerAddress() throws Exception {
+    private Address receiveServerAddress() throws Exception {
         byte[] buf = new byte[1024];
         DatagramPacket request = null;
         DatagramSocket socket = new DatagramSocket(5005);
-        request = new DatagramPacket (buf, buf.length);
-        String result = "";
-        int attempt = 0;
-        while ("".equals(result.trim()) || attempt >= 10) {
-            socket.receive(request);
-            result = new String(request.getData(),0,request.getLength());
-            if (!"".equals(result.trim())) {
-                Address address = new Address();
-                result = result.substring(4);
-                String[] aResult = result.split(":");
-                address.setIpAddress(aResult[0]);
-                address.setPortNumber(Integer.parseInt(aResult[1]));
-                return address;
-            }
-        }            
-        return null;
-    }
-    
-    private static void sendFileSocket(Address serverAddress, File file) throws Exception {
-        Socket socket;
-        byte[] sendData = new byte[1024];
-        if (file != null ) {
-            /* Inicializacao de socket TCP */
-            socket = new Socket(serverAddress.getIpAddress(), serverAddress.getPortNumber());
-            
-            FileInputStream in = new FileInputStream(file);
-            OutputStream out = socket.getOutputStream();
-            OutputStreamWriter osw = new OutputStreamWriter(out);
-            BufferedWriter writer = new BufferedWriter(osw);
-            writer.write(file.getName() + "\n");
-            writer.flush();
-            int tamanho = 4096; // buffer de 4KB  
-	    byte[] buffer = new byte[tamanho];  
-	    int lidos = -1;  
-	    while ((lidos = in.read(buffer, 0, tamanho)) != -1) {  
-	        out.write(buffer, 0, lidos);  
-	    }  
-            
+        try {
+            request = new DatagramPacket (buf, buf.length);
+            String result = "";
+            int attempt = 0;
+            while ("".equals(result.trim()) || attempt >= 10) {
+                socket.receive(request);
+                result = new String(request.getData(),0,request.getLength());
+                if (!"".equals(result.trim())) {
+                    Address address = new Address();
+                    result = result.substring(4);
+                    String[] aResult = result.split(":");
+                    address.setIpAddress(aResult[0]);
+                    address.setPortNumber(Integer.parseInt(aResult[1]));
+                    return address;
+                }
+                ++attempt;
+            }     
+            return null;
+        } finally {
             socket.close();
         }
     }
     
-    private static File openFile() {
+    private void sendFileSocket(Address serverAddress, File file) throws Exception {              
+        new SwingWorker<String, Long>() {
+            @Override
+            protected String doInBackground() throws Exception {
+                btnSelecionarArquivo.setEnabled(false);
+                rbDropbox.setEnabled(false);
+                rbGoogleDrive.setEnabled(false);
+                rbOneDrive.setEnabled(false);
+                Socket socket;
+                byte[] sendData = new byte[1024];
+                if (file != null ) {
+                    /* Inicializacao de socket TCP */
+                    socket = new Socket(serverAddress.getIpAddress(), serverAddress.getPortNumber());
+
+                    FileInputStream in = new FileInputStream(file);
+                    OutputStream out = socket.getOutputStream();
+                    OutputStreamWriter osw = new OutputStreamWriter(out);
+                    BufferedWriter writer = new BufferedWriter(osw);
+                    writer.write(file.getName() + "\n");
+                    writer.flush();
+                    long sizeFile = file.length();            
+                    int sizeBuffer = 4096; // buffer de 4KB  
+                    arquivoPB.setMaximum(100);
+                    totalLB.setText("Total: " + sizeFile + "B");
+                    enviadoLB.setText("Enviado: 0B");
+                    byte[] buffer = new byte[sizeBuffer];
+                    int reads = -1;  
+                    double acumPercent = 0;
+                    long acumRead = 0;
+                    while ((reads = in.read(buffer, 0, sizeBuffer)) != -1) {  
+                        out.write(buffer, 0, reads); 
+                        acumPercent += (reads * 100.0) / sizeFile;
+                        acumRead += reads;
+                        publish(Math.round(acumPercent), acumRead);
+                    }  
+                    socket.close();  
+                    // colocado sleep, pois com arquivos menores é retornado antes que o metodo process termine
+                    Thread.sleep(500); 
+                    return "Success";
+                }  
+                publish(0L);
+                return "Failed";
+            }
+            @Override
+            protected void process(List<Long> chunks) {
+                long percent = chunks.get(0);
+                long value = chunks.get(1);
+                enviadoLB.setText("Enviado: " + value + "B");
+                arquivoPB.setValue((int) percent);
+                arquivoPB.setString(percent + "%");
+            }
+            @Override
+            protected void done() {
+                try {
+                    if ("Success".equals(get())) {
+                        JOptionPane.showMessageDialog(Client.this, "Envio concluído", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(Client.this, "Falha ao enviar arquivo - Arquivo não informado", "Erro na finalização do envio", JOptionPane.ERROR);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(Client.this, ex.getMessage(), "Erro na finalização do envio", JOptionPane.ERROR);
+                } finally {
+                    btnSelecionarArquivo.setEnabled(true);
+                    rbDropbox.setEnabled(true);
+                    rbGoogleDrive.setEnabled(true);
+                    rbOneDrive.setEnabled(true);
+                    totalLB.setText("Total: 0B");
+                    enviadoLB.setText("Enviado: 0B");
+                    arquivoPB.setValue(0);
+                    arquivoPB.setString("0%");
+                }
+;
+            }
+        }.execute();
+    }
+    
+    private File openFile() {
         JFileChooser openFile = new JFileChooser();
         openFile.setAcceptAllFileFilterUsed(false);
         openFile.setDialogType(JFileChooser.OPEN_DIALOG);
@@ -295,16 +364,17 @@ public class Client extends javax.swing.JFrame {
             return openFile.getSelectedFile();
         }
         return null;
-    }
+    }        
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JProgressBar arquivoPB;
     private javax.swing.ButtonGroup btnGroupServer;
     private javax.swing.JButton btnSelecionarArquivo;
-    private javax.swing.JLabel lblArquivo;
-    private javax.swing.JLabel lblArquivoSelecionado;
+    private javax.swing.JLabel enviadoLB;
     private javax.swing.JPanel panelServer;
     private javax.swing.JRadioButton rbDropbox;
     private javax.swing.JRadioButton rbGoogleDrive;
     private javax.swing.JRadioButton rbOneDrive;
+    private javax.swing.JLabel totalLB;
     // End of variables declaration//GEN-END:variables
 }
