@@ -315,9 +315,7 @@ public class Client extends javax.swing.JFrame {
                         publish(Math.round(acumPercent), acumRead);
                         out.write(buffer, 0, reads); 
                     }  
-                    socket.close();  
-                    // colocado sleep, pois com arquivos menores é retornado antes que o metodo process termine
-                    Thread.sleep(1000); 
+                    socket.close();
                     publish(100L, sizeFile);
                     return "Success";
                 }  
