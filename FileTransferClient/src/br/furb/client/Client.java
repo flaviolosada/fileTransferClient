@@ -316,6 +316,7 @@ public class Client extends javax.swing.JFrame {
                         out.write(buffer, 0, reads); 
                     }  
                     socket.close();
+                    Thread.sleep(800);
                     publish(100L, sizeFile);
                     return "Success";
                 }  
